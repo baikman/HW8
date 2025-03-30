@@ -18,6 +18,14 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Gate.h" />
+    <ClInclude Include="Wire.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Gate.cpp" />
+    <ClCompile Include="Wire.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
