@@ -132,16 +132,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-<<<<<<< HEAD
-  <ItemGroup>
-    <ClInclude Include="test.h" />
-    <ClInclude Include="Wire.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Wire.cpp" />
-  </ItemGroup>
-=======
->>>>>>> 3abde38977dca9e8ba0327a4ff3073d13c7aaa33
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
