@@ -1,5 +1,4 @@
 #pragma once
-#include "Gate.h"
 #include "cctype"
 #include <string>
 #include <vector>
@@ -10,7 +9,7 @@ class Gate;
 
 class Wire {
 public:
-	Wire() : value('X'), index(0), name("wire"), history(""), drives(NULL) {};
+	Wire() : value(0), index(0), name("wire"), history(""), drives(NULL) {};
 	void SetValue(char val);
 	void SetHistory(string hist);
 	void SetDrives(vector<Gate*> drvs);

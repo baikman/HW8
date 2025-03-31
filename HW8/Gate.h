@@ -1,5 +1,4 @@
 #pragma once
-#include "Wire.h"
 #include <string>
 #include <map>
 
@@ -20,7 +19,6 @@ public:
 
 	char evaluate(string type, Wire* input1, Wire* input2, Wire* output);
 
-// Windows is better
 private:
 	Wire* input1, * input2;
 	Wire* outputWire;
