@@ -20,6 +20,7 @@ public:
 
 	char evaluate(string type, Wire* input1, Wire* input2, Wire* output);
 
+// Abby macbook test
 private:
 	Wire* input1, * input2;
 	Wire* outputWire;
