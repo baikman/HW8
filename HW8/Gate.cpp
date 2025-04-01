@@ -21,11 +21,9 @@ Wire* Gate::getOutput() const {
 char NOT(char inp1) {
 	if (inp1 == '1') {
 		return '0';
-	}
-	else if (inp1 == '0') {
+	} else if (inp1 == '0') {
 		return '1';
-	}
-	else {
+	} else {
 		return 'X';
 	}
 }
@@ -33,16 +31,14 @@ char NOT(char inp1) {
 char AND(char inp1, char inp2) {
 	if (inp1 == '1' && inp2 == '1') {
 		return '1';
-	}
-	else if (inp1 == 'X' || inp2 == 'X') {
-		if (inp1 == '1' || inp2 == '1') {
+	} else if (inp1 == 'X' || inp2 == 'X') {
+		if ((inp1 == '1' || inp2 == '1') || (inp1 == 'X' && inp2 == 'X')) {
 			return 'X';
 		}
 		else {
 			return '0';
 		}
-	}
-	else {
+	} else {
 		return '0';
 	}
 }
@@ -50,12 +46,10 @@ char AND(char inp1, char inp2) {
 char OR(char inp1, char inp2) {
 	if (inp1 == '1' || inp2 == '1') {
 		return '1';
-	}
-	else {
+	} else {
 		if (inp1 == 'X' || inp2 == 'X') {
 			return 'X';
-		}
-		else {
+		} else {
 			return '0';
 		}
 	}
@@ -64,11 +58,9 @@ char OR(char inp1, char inp2) {
 char XOR(char inp1, char inp2) {
 	if ((inp1 == '1' && inp2 == '0') || (inp1 == '0' && inp2 == '1')) {
 		return '1';
-	}
-	else if (inp1 == 'X' || inp2 == 'X') {
+	} else if (inp1 == 'X' || inp2 == 'X') {
 		return 'X';
-	}
-	else {
+	} else {
 		return '0';
 	}
 }
@@ -105,23 +97,3 @@ char Gate::evaluate(string type, Wire* input1, Wire* input2, Wire* output) {
 		return XNOR(inp1, inp2);
 	}
 }
-
-
-	
-/*delayTime
-
-int i = 0;
-int numNums = 0;
-int finalVal = 0;
-
-while (isdigit(delayTime.at(i)) {
-	numNums += 1;
-	i++;
-}
-
-/* logic is wrong
-for (int j = (numNums - 1); j >= 0; j++) {
-	finalVal += (delay.at(j) * pow(10, j));
-} */
-
-
