@@ -9,7 +9,7 @@ class Wire;
 
 class Gate {
 public:
-	
+	Gate() : gateType(""), delayTime(0), input1(NULL), input2(NULL), outputWire(NULL) {};
 	Gate(string type, int delay, Wire* in1, Wire* in2, Wire* output) : gateType(type), delayTime(delay),
 		input1(in1), input2(in2), outputWire(output) {};
 	
