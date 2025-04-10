@@ -25,10 +25,17 @@ string Wire::GetName() const {
 	return name;
 }
 
-string Wire::GetHistory() const {
+vector<char> Wire::GetHistory() const {
 	return history;
 }
 
 vector<Gate*> Wire::GetDrives() const {
 	return drives;
+}
+
+void Wire::PrintHistory() const {
+	cout << name << "	";
+	for (char c : history) {
+		cout << c;
+	}
 }
