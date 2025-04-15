@@ -22,8 +22,23 @@ int main() {
 			wires.insert({ wireName, myWire });
 		} else if (keyword == "NOT") {
 			in >> delay >> input1 >> output;
-			myGate = new Gate(keyword, delay, wires[input], nullptr, wires[output]);
+			myGate = new Gate(keyword, delay, wires[input1], nullptr, wires[output]);
 		} else if (keyword == "AND") {
+			in >> delay >> input1 >> input2 >> output;
+			myGate = new Gate(keyword, delay, wires[input1], wires[input2], wires[output]);
+		} else if (keyword == "OR") {
+			in >> delay >> input1 >> input2 >> output;
+			myGate = new Gate(keyword, delay, wires[input1], wires[input2], wires[output]);
+		} else if (keyword == "XOR") {
+			in >> delay >> input1 >> input2 >> output;
+			myGate = new Gate(keyword, delay, wires[input1], wires[input2], wires[output]);
+		} else if (keyword == "NAND") {
+			in >> delay >> input1 >> input2 >> output;
+			myGate = new Gate(keyword, delay, wires[input1], wires[input2], wires[output]);
+		} else if (keyword == "NOR") {
+			in >> delay >> input1 >> input2 >> output;
+			myGate = new Gate(keyword, delay, wires[input1], wires[input2], wires[output]);
+		} else if (keyword == "XNOR") {
 			in >> delay >> input1 >> input2 >> output;
 			myGate = new Gate(keyword, delay, wires[input1], wires[input2], wires[output]);
 		}
