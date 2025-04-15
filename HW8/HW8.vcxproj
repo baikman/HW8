@@ -32,6 +32,10 @@
     <ClCompile Include="Queue.cpp" />
     <ClCompile Include="Wire.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="circui0_v.txt" />
+    <Text Include="circuit0.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

@@ -1,11 +1,12 @@
 #include "Gate.h"
 #include "Wire.h"
+#include <iostream>
 
 void Wire::SetValue(char val) {
 	value = val;
 }
 
-void Wire::SetHistory(string hist) {
+void Wire::SetHistory(vector<char> hist) {
 	history = hist;
 }
 
@@ -37,5 +38,14 @@ void Wire::PrintHistory() const {
 	cout << name << "	";
 	for (char c : history) {
 		cout << c;
+	}
+}
+
+void Wire::PrintInfo() const {
+	cout << value << " " << index << " " << name << " ";
+	PrintHistory();
+	for (Gate* g : drives) {
+		g->PrintInfo();
+		cout << " ";
 	}
 }

@@ -9,11 +9,11 @@ class Gate;
 
 class Wire {
 public:
-	Wire() : value(''), index(0), name(""), history({''}), drives({NULL}) {};
-	Wire(char val, int ind, string nm, history hist, drives drvs) : value(val), index(ind), name(nm), history(hist), drives(drvs) {};
+	Wire() : value('\0'), index(0), name(""), history({'\0'}), drives({NULL}) {};
+	Wire(char val, int ind, string nm, vector<char> hist, vector<Gate*> drvs) : value(val), index(ind), name(nm), history(hist), drives(drvs) {};
 
 	void SetValue(char val);
-	void SetHistory(string hist);
+	void SetHistory(vector<char> hist);
 	void SetDrives(vector<Gate*> drvs);
 	
 	char GetValue() const;
@@ -23,6 +23,7 @@ public:
 	vector<Gate*> GetDrives() const;
 
 	void PrintHistory() const;
+	void PrintInfo() const;
 private:
 	char value;
 	int index;

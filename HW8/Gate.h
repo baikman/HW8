@@ -16,6 +16,7 @@ public:
 	Wire* getInput(int input) const;
 	Wire* getOutput() const;
 	char evaluate(string type, Wire* input1, Wire* input2, Wire* output);
+	void PrintInfo() const;
 
 private:
 	Wire* input1, * input2;

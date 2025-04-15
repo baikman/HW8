@@ -97,3 +97,10 @@ char Gate::evaluate(string type, Wire* input1, Wire* input2, Wire* output) {
 		return XNOR(inp1, inp2);
 	}
 }
+
+void Gate::PrintInfo() const {
+	input1->PrintInfo();
+	input2->PrintInfo();
+	outputWire->PrintInfo();
+	cout << delayTime << endl;
+}

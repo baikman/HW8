@@ -48,4 +48,8 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="circuit0.txt" />
+    <Text Include="circui0_v.txt" />
+  </ItemGroup>
 </Project>
