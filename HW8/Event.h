@@ -9,7 +9,7 @@ class Queue;
 
 class Event {
 public:
-    Event() : wireName(""), time(-1), state(""), count(0);
+    Event() : wireName(""), time(-1), state('\0'), count(0);
     Event(string name, int t, char val, int cnt) : wireName(name), time(t), state(val), count(cnt);
 
 private:
