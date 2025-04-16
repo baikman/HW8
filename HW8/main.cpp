@@ -1,3 +1,6 @@
+//Brandon Aikman and Abby Wurster
+
+
 #include "Wire.h"
 #include "Gate.h"
 #include <iostream>
