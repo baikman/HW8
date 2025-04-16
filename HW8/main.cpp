@@ -55,7 +55,7 @@ int main(/*int argc, char* argv[]*/) {
 			myWire = new Wire('X', wireIndex, wireName, {'\0'}, {nullptr});
 			wires.insert({ wireIndex, myWire });
 		} else if (keyword == "NOT") {
-			in >> delay >> >> dummy >> input1 >> output;
+			in >> delay >> dummy >> input1 >> output;
 			// TODO: check tp make sure the wirew exist, and if not create them
 			myGate = new Gate(keyword, delay, wires[input1], nullptr, wires[output]);
 			gates.push_back(myGate);
