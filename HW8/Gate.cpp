@@ -95,6 +95,9 @@ char Gate::evaluate(string type, Wire* input1, Wire* input2, Wire* output) {
 		return NOR(inp1, inp2);
 	case 7:
 		return XNOR(inp1, inp2);
+	default: 
+		cerr << "Unexpected gate type";
+		return '\0';
 	}
 }
 
