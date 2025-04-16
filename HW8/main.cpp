@@ -59,10 +59,12 @@ int main(/*int argc, char* argv[]*/) {
 			// TODO: check tp make sure the wirew exist, and if not create them
 			myGate = new Gate(keyword, delay, wires[input1], nullptr, wires[output]);
 			gates.push_back(myGate);
+			//TODO: set input1's drives to the new gate
 		} else if (keyword == "AND" || keyword == "OR" || keyword == "XOR" || keyword == "NAND" || keyword == "NOR" || keyword == "XNOR") {
 			in >> delay >> dummy >> input1 >> input2 >> output;
 			myGate = new Gate(keyword, delay, wires[input1], wires[input2], wires[output]);
 			gates.push_back(myGate);
+			//TODO: set input1 and input2's drives to the new gate
 		} 
 
 		in >> keyword;
