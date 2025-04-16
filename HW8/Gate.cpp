@@ -6,15 +6,15 @@
 
 using namespace std;
 
-int Gate::getDelay() const {
+int Gate::GetDelay() const {
 	return delayTime;
 }
 
-Wire* Gate::getInput(int input) const {
+Wire* Gate::GetInput(int input) const {
 	return ((input == 1) ? input1 : input2);
 }
 
-Wire* Gate::getOutput() const {
+Wire* Gate::GetOutput() const {
 	return outputWire;
 }
 
