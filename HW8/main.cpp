@@ -6,12 +6,13 @@
 using namespace std;
 
 int main(/*int argc, char* argv[]*/) {
-	string cd, ic, keyword, input1, input2, output, circuitName, wireName, vectorName;
-	map<string, Wire*> wires;
+	string cd, ic, keyword, circuitName, wireName, vectorName, dummy;
+	map<int, Wire*> wires;  // TODO: recommend using wireIndex versus wireName in the map
+		// use map::count to check existence
 	vector<Gate*> gates;
 	Wire* myWire;
 	Gate* myGate;
-	int delay, wireIndex;
+	int delay, wireIndex, input1, input2, output;
 	ifstream in;
 
 	/*
@@ -36,46 +37,31 @@ int main(/*int argc, char* argv[]*/) {
 		return 1;
 	}
 
+	//cout << "Got here 0.5" << endl;
+	in >> keyword;
 	while (!in.eof()) {
 		if (keyword == "CIRCUIT") {
 			in >> circuitName;
 		} else if (keyword == "INPUT") {
 			in >> wireName >> wireIndex;
 			myWire = new Wire('X', wireIndex, wireName, {'\0'}, {nullptr});
-			wires.insert({ wireName, myWire });
+			wires.insert({ wireIndex, myWire });
 		} else if (keyword == "OUTPUT") {
 			in >> wireName >> wireIndex;
 			myWire = new Wire('X', wireIndex, wireName, {'\0'}, {nullptr});
-			wires.insert({ wireName, myWire });
+			wires.insert({ wireIndex, myWire });
 		} else if (keyword == "NOT") {
-			in >> delay >> input1 >> output;
+			in >> delay >> >> dummy >> input1 >> output;
+			// TODO: check tp make sure the wirew exist, and if not create them
 			myGate = new Gate(keyword, delay, wires[input1], nullptr, wires[output]);
 			gates.push_back(myGate);
-		} else if (keyword == "AND") {
-			in >> delay >> input1 >> input2 >> output;
+		} else if (keyword == "AND" || keyword == "OR" || keyword == "XOR" || keyword == "NAND" || keyword == "NOR" || keyword == "XNOR") {
+			in >> delay >> dummy >> input1 >> input2 >> output;
 			myGate = new Gate(keyword, delay, wires[input1], wires[input2], wires[output]);
 			gates.push_back(myGate);
-		} else if (keyword == "OR") {
-			in >> delay >> input1 >> input2 >> output;
-			myGate = new Gate(keyword, delay, wires[input1], wires[input2], wires[output]);
-			gates.push_back(myGate);
-		} else if (keyword == "XOR") {
-			in >> delay >> input1 >> input2 >> output;
-			myGate = new Gate(keyword, delay, wires[input1], wires[input2], wires[output]);
-			gates.push_back(myGate);
-		} else if (keyword == "NAND") {
-			in >> delay >> input1 >> input2 >> output;
-			myGate = new Gate(keyword, delay, wires[input1], wires[input2], wires[output]);
-			gates.push_back(myGate);
-		} else if (keyword == "NOR") {
-			in >> delay >> input1 >> input2 >> output;
-			myGate = new Gate(keyword, delay, wires[input1], wires[input2], wires[output]);
-			gates.push_back(myGate);
-		} else if (keyword == "XNOR") {
-			in >> delay >> input1 >> input2 >> output;
-			myGate = new Gate(keyword, delay, wires[input1], wires[input2], wires[output]);
-			gates.push_back(myGate);
-		}
+		} 
+
+		in >> keyword;
 	}
 
 	// Close circuit description file
@@ -89,6 +75,8 @@ int main(/*int argc, char* argv[]*/) {
 		return 1;
 	}
 
+	in >> keyword;
+
 	while (!in.eof()) {
 
 		if (keyword == "VECTOR") {
@@ -98,8 +86,9 @@ int main(/*int argc, char* argv[]*/) {
 		else if (keyword == "INPUT") {
 			in >> wireName >> wireIndex;
 			myWire = new Wire('X', wireIndex, wireName, {'\0'}, {nullptr});
-			wires.insert({ wireName, myWire });
+			wires.insert({ wireIndex, myWire });
 		}
+		in >> keyword;
 	}
 
 	// Close IC file
