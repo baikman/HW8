@@ -4,12 +4,15 @@
 
 #include "Wire.h"
 #include "Gate.h"
+#include "Event.h"
 #include <iostream>
 #include <fstream>
 
 using namespace std;
 
 int main(/*int argc, char* argv[]*/) {
+	Wire testWire1, testWire2;  //testing
+	
 	string cd, ic, keyword, circuitName, wireName, vectorName, dummy;
 	map<int, Wire*> wires;  // TODO: recommend using wireIndex versus wireName in the map
 		// use map::count to check existence
@@ -59,12 +62,20 @@ int main(/*int argc, char* argv[]*/) {
 			// TODO: check tp make sure the wirew exist, and if not create them
 			myGate = new Gate(keyword, delay, wires[input1], nullptr, wires[output]);
 			gates.push_back(myGate);
-			//TODO: set input1's drives to the new gate
-		} else if (keyword == "AND" || keyword == "OR" || keyword == "XOR" || keyword == "NAND" || keyword == "NOR" || keyword == "XNOR") {
+			//TODO?: set input1's drives to the new gate
+			testWire1 = *wires.at(input1);
+			testWire1.SetDrives(gates);  //Does the vector of gates need to be reset each time?
+			//Can we make the parameter for SetDrives be a pointer to gates without it being a vector of pointers?
+		} else if (keyword == "AND" || keyword == "OR" || keyword == "XOR" || 
+				   keyword == "NAND" || keyword == "NOR" || keyword == "XNOR") {
 			in >> delay >> dummy >> input1 >> input2 >> output;
 			myGate = new Gate(keyword, delay, wires[input1], wires[input2], wires[output]);
 			gates.push_back(myGate);
-			//TODO: set input1 and input2's drives to the new gate
+			//TODO?: set input1 and input2's drives to the new gate
+			testWire1 = *wires.at(input1);
+			testWire2 = *wires.at(input2);
+			testWire1.SetDrives(gates);
+			testWire2.SetDrives(gates);
 		} 
 
 		in >> keyword;
