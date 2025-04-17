@@ -15,6 +15,7 @@ public:
 	void SetValue(char val);
 	void SetHistory(vector<char> hist);
 	void SetDrives(vector<Gate*> drvs);
+	void AddDrive(Gate* drv);
 	
 	char GetValue() const;
 	int GetIndex() const;

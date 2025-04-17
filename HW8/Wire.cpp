@@ -14,6 +14,10 @@ void Wire::SetDrives(vector<Gate*> drvs) {
 	drives = drvs;
 }
 
+void Wire::AddDrive(Gate* drv) {
+	drives.push_back(drv);
+}
+
 char Wire::GetValue() const {
 	return value;
 }
@@ -45,7 +49,9 @@ void Wire::PrintInfo() const {
 	cout << value << " " << index << " " << name << " ";
 	PrintHistory();
 	for (Gate* g : drives) {
-		g->PrintInfo();
-		cout << " ";
+		if (g != NULL) {
+			g->PrintInfo();
+			cout << " ";
+		}
 	}
 }

@@ -21,7 +21,7 @@ int main(/*int argc, char* argv[]*/) {
 	int delay, wireIndex, input1, input2, output;
 	ifstream in;
 
-	Wire testWire1, testWire2;  //testing
+	Wire* testWire1, *testWire2;  //testing
 	priority_queue<Event> q;
 	
 	/*
@@ -61,23 +61,22 @@ int main(/*int argc, char* argv[]*/) {
 			wires.insert({ wireIndex, myWire });
 		} else if (keyword == "NOT") {
 			in >> delay >> dummy >> input1 >> output;
-			// TODO: check tp make sure the wirew exist, and if not create them
+			// TODO: check to make sure the wires exist, and if not create them
 			myGate = new Gate(keyword, delay, wires[input1], nullptr, wires[output]);
 			gates.push_back(myGate);
-			//TODO?: set input1's drives to the new gate
-			testWire1 = *wires.at(input1);
-			testWire1.SetDrives(gates);  //Does the vector of gates need to be reset each time?
-			//Can we make the parameter for SetDrives be a pointer to gates without it being a vector of pointers?
+			// TODO?: set input1's drives to the new gate
+			testWire1 = wires[input1];
+			testWire1->AddDrive(myGate);
 		} else if (keyword == "AND" || keyword == "OR" || keyword == "XOR" || 
 				   keyword == "NAND" || keyword == "NOR" || keyword == "XNOR") {
 			in >> delay >> dummy >> input1 >> input2 >> output;
 			myGate = new Gate(keyword, delay, wires[input1], wires[input2], wires[output]);
 			gates.push_back(myGate);
 			//TODO?: set input1 and input2's drives to the new gate
-			testWire1 = *wires.at(input1);
-			testWire2 = *wires.at(input2);
-			testWire1.SetDrives(gates);
-			testWire2.SetDrives(gates);
+			testWire1 = wires[input1];
+			testWire2 = wires[input2];
+			testWire1->AddDrive(myGate);
+			testWire2->AddDrive(myGate);
 		} 
 
 		in >> keyword;
@@ -85,7 +84,6 @@ int main(/*int argc, char* argv[]*/) {
 
 	// Close circuit description file
 	in.close();
-	cout << "Got here" << endl;
 	in.open(ic);
 
 	// If circuit description file cannot open
@@ -112,10 +110,10 @@ int main(/*int argc, char* argv[]*/) {
 
 	// Close IC file
 	in.close();
-	cout << "Got here2" << endl;
+
 	cout << "Testing parsing: first wires:" << endl;
 	for (auto const& x : wires) {
-		cout << x.first << " " << x.second << endl;
+		cout << x.first << " " << x.second->GetValue() << endl;
 	}
 
 	cout << "gates: " << endl;
@@ -124,6 +122,6 @@ int main(/*int argc, char* argv[]*/) {
 		x->PrintInfo();
 		cout << endl;
 	}
-
+	
 	return 0;
 }

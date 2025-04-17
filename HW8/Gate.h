@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <map>
+#include <vector>
 
 using namespace std;
 
@@ -15,8 +16,8 @@ public:
 	int GetDelay() const;
 	Wire* GetInput(int input) const;
 	Wire* GetOutput() const;
-	char evaluate(string type, Wire* input1, Wire* input2, Wire* output);
-	void PrintInfo() const;
+	char evaluate(string type, Wire* input1, Wire* input2, Wire* output);//const?
+	void PrintInfo();//const
 
 private:
 	Wire* input1, * input2;
