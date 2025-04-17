@@ -7,12 +7,11 @@
 #include "Event.h"
 #include <iostream>
 #include <fstream>
+#include <queue>
 
 using namespace std;
 
 int main(/*int argc, char* argv[]*/) {
-	Wire testWire1, testWire2;  //testing
-	
 	string cd, ic, keyword, circuitName, wireName, vectorName, dummy;
 	map<int, Wire*> wires;  // TODO: recommend using wireIndex versus wireName in the map
 		// use map::count to check existence
@@ -22,6 +21,9 @@ int main(/*int argc, char* argv[]*/) {
 	int delay, wireIndex, input1, input2, output;
 	ifstream in;
 
+	Wire testWire1, testWire2;  //testing
+	priority_queue<Event> q;
+	
 	/*
 	if (argc != 3) {
 		cout << " bad input count" << endl;
