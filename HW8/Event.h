@@ -5,23 +5,41 @@
 
 using namespace std;
 
-class Queue;
-
 class Event {
 public:
-    //We don't need a default constructor
-    Event(int index, int t, char val, int cnt) : wireIndex(index), time(t), state(val), count(cnt) {};
+    // We don't need a default constructor
+    Event(string nm, int t, char val, int cnt) : name(nm), time(t), state(val), count(cnt) {};
     
-    int GetIndex() const;
+    string GetName() const;
     int GetTime() const;
     char GetState() const;
     int GetCount() const;
 
-    friend bool operator<(const Event& e1, const Event& e2);
+    // TODO: Declare this in main program: priority_queue<Event> q
+    /*
+    struct Comparator {
+        bool operator()(const Event& e1, const Event& e2) {
+            if (e1.time == e2.time) {
+                return e1.count > e2.count;
+            }
 
-    //TODO: Declare this in main program: priority_queue<Event> q
-
+            return e1.time > e2.time;
+        }
+    };
+    */
 private:
-    int wireIndex, time, count;  
+    string name;
+    int time, count;  
     char state;
+};
+
+class Comparator {
+public:
+    bool operator()(const Event& e1, const Event& e2) {
+        if (e1.GetTime() == e2.GetTime()) {
+            return e1.GetCount() > e2.GetCount();
+        }
+
+        return e1.GetTime() > e2.GetTime();
+    }
 };

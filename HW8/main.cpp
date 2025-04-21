@@ -1,7 +1,6 @@
 //Brandon Aikman and Abby Wurster
 //April 16, 2025
 
-
 #include "Wire.h"
 #include "Gate.h"
 #include "Event.h"
@@ -11,20 +10,20 @@
 
 using namespace std;
 
-int main(/*int argc, char* argv[]*/) {
+int main(int argc, char* argv[]) {
+	priority_queue<Event, vector<Event>, Comparator> q;
 	string cd, ic, keyword, circuitName, wireName, vectorName, dummy;
-	map<int, Wire*> wires;  // TODO: recommend using wireIndex versus wireName in the map
-		// use map::count to check existence
+	map<int, Wire*> wires; // use map::count to check existence
 	vector<Gate*> gates;
 	Wire* myWire;
 	Gate* myGate;
-	int delay, wireIndex, input1, input2, output;
+	Event* myEvent;
+	int delay, wireIndex, input1, input2, output, wTime;
 	ifstream in;
+	char state;
 
 	Wire* testWire1, *testWire2;  //testing
-	priority_queue<Event> q;
 	
-	/*
 	if (argc != 3) {
 		cout << " bad input count" << endl;
 		return 1;
@@ -33,10 +32,6 @@ int main(/*int argc, char* argv[]*/) {
 
 	cd = argv[1];
 	ic = argv[2];
-	*/
-
-	cd = "circuit0.txt";
-	ic = "circuit0_v.txt";
 
 	in.open(cd);
 
@@ -46,7 +41,6 @@ int main(/*int argc, char* argv[]*/) {
 		return 1;
 	}
 
-	//cout << "Got here 0.5" << endl;
 	in >> keyword;
 	while (!in.eof()) {
 		if (keyword == "CIRCUIT") {
@@ -54,25 +48,34 @@ int main(/*int argc, char* argv[]*/) {
 		} else if (keyword == "INPUT") {
 			in >> wireName >> wireIndex;
 			myWire = new Wire('X', wireIndex, wireName, {'\0'}, {nullptr});
-			wires.insert({ wireIndex, myWire });
+			wires.insert({wireIndex, myWire});
 		} else if (keyword == "OUTPUT") {
 			in >> wireName >> wireIndex;
 			myWire = new Wire('X', wireIndex, wireName, {'\0'}, {nullptr});
-			wires.insert({ wireIndex, myWire });
+			wires.insert({wireIndex, myWire});
 		} else if (keyword == "NOT") {
 			in >> delay >> dummy >> input1 >> output;
-			// TODO: check to make sure the wires exist, and if not create them
+			// Check if output wire exists
+			if (wires.count(output) == 0) {
+				myWire = new Wire('X', output, "", { '\0' }, { nullptr });
+				wires.insert({wireIndex, myWire});
+			}
 			myGate = new Gate(keyword, delay, wires[input1], nullptr, wires[output]);
 			gates.push_back(myGate);
-			// TODO?: set input1's drives to the new gate
+			// temp done. TODO?: set input1's drives to the new gate
 			testWire1 = wires[input1];
 			testWire1->AddDrive(myGate);
 		} else if (keyword == "AND" || keyword == "OR" || keyword == "XOR" || 
 				   keyword == "NAND" || keyword == "NOR" || keyword == "XNOR") {
 			in >> delay >> dummy >> input1 >> input2 >> output;
+			// Check if output wire exists
+			if (wires.count(output) == 0) {
+				myWire = new Wire('X', output, "", { '\0' }, { nullptr });
+				wires.insert({ wireIndex, myWire });
+			}
 			myGate = new Gate(keyword, delay, wires[input1], wires[input2], wires[output]);
 			gates.push_back(myGate);
-			//TODO?: set input1 and input2's drives to the new gate
+			// temp done. TODO?: set input1 and input2's drives to the new gate
 			testWire1 = wires[input1];
 			testWire2 = wires[input2];
 			testWire1->AddDrive(myGate);
@@ -101,9 +104,8 @@ int main(/*int argc, char* argv[]*/) {
 		}
 
 		else if (keyword == "INPUT") {
-			in >> wireName >> wireIndex;
-			myWire = new Wire('X', wireIndex, wireName, {'\0'}, {nullptr});
-			wires.insert({ wireIndex, myWire });
+			in >> wireName >> wTime >> state;
+			q.emplace(Event(wireName, wTime, state, q.size() + 2));
 		}
 		in >> keyword;
 	}

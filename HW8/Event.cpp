@@ -3,8 +3,8 @@
 
 using namespace std;
 
-int Event::GetIndex() const {
-	return wireIndex;
+string Event::GetName() const {
+	return name;
 }
 
 int Event::GetTime() const {
@@ -18,14 +18,3 @@ char Event::GetState() const {
 int Event::GetCount() const {
     return count;
 }
-
-bool operator<(const Event& e1, const Event& e2) {
-	if (e1.time == e2.time) {
-		return e1.count > e2.count;
-	}
-
-	return e1.time > e2.time; //Is this the right thing to return?
-}
-
-
-

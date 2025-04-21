@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Defns.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="Gate.h" />
     <ClInclude Include="Wire.h" />
@@ -31,8 +30,8 @@
     <ClCompile Include="Wire.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="circui0_v.txt" />
     <Text Include="circuit0.txt" />
+    <Text Include="circuit0_v.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
