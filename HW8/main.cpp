@@ -108,11 +108,16 @@ int main(int argc, char* argv[]) {
 
 			for (int i = 0; i < q.size(); i++) {
 				if (wireName == ((q.top()).GetName())) {
-					if wTime = 
+					if (wTime == ((q.top()).GetName())) {
+						break;
+					}
+					else {
+						q.emplace(Event(wireName, wTime, state, q.size() + 2));
+					}
 				} 
 			}
 
-			q.emplace(Event(wireName, wTime, state, q.size() + 2));
+			
 		}
 		in >> keyword;
 	}
