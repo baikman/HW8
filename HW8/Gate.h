@@ -20,7 +20,7 @@ public:
 	void PrintInfo();//const
 
 private:
-	Wire* input1, * input2;
+	Wire *input1, *input2;
 	Wire* outputWire;
 	string gateType;
 	int delayTime;

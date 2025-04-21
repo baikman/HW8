@@ -18,3 +18,7 @@ char Event::GetState() const {
 int Event::GetCount() const {
     return count;
 }
+
+void Event::PrintInfo()  {
+	cout << name << " " << time << " " << state << " " << count << endl;
+}

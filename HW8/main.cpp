@@ -105,6 +105,13 @@ int main(int argc, char* argv[]) {
 
 		else if (keyword == "INPUT") {
 			in >> wireName >> wTime >> state;
+
+			for (int i = 0; i < q.size(); i++) {
+				if (wireName == ((q.top()).GetName())) {
+					if wTime = 
+				} 
+			}
+
 			q.emplace(Event(wireName, wTime, state, q.size() + 2));
 		}
 		in >> keyword;
@@ -123,6 +130,15 @@ int main(int argc, char* argv[]) {
 	for (auto const& x : gates) {
 		x->PrintInfo();
 		cout << endl;
+	}
+
+
+	// Printing Events
+	cout << "Event Queue" << endl;
+	cout << "N T S C" << endl;
+
+	for (auto const& x : q) {
+		x->PrintInfo();
 	}
 	
 	return 0;

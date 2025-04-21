@@ -15,6 +15,8 @@ public:
     char GetState() const;
     int GetCount() const;
 
+    void PrintInfo();
+
     // TODO: Declare this in main program: priority_queue<Event> q
     /*
     struct Comparator {
