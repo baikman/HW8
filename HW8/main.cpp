@@ -17,7 +17,6 @@ int main(int argc, char* argv[]) {
 	vector<Gate*> gates;
 	Wire* myWire;
 	Gate* myGate;
-	Event* myEvent;
 	int delay, wireIndex, input1, input2, output, wTime;
 	ifstream in;
 	char state;
@@ -106,18 +105,8 @@ int main(int argc, char* argv[]) {
 		else if (keyword == "INPUT") {
 			in >> wireName >> wTime >> state;
 
-			for (int i = 0; i < q.size(); i++) {
-				if (wireName == ((q.top()).GetName())) {
-					if (wTime == ((q.top()).GetName())) {
-						break;
-					}
-					else {
-						q.emplace(Event(wireName, wTime, state, q.size() + 2));
-					}
-				} 
-			}
+			q.emplace(Event(wireName, wTime, state, q.size() + 1));
 
-			
 		}
 		in >> keyword;
 	}
@@ -142,8 +131,11 @@ int main(int argc, char* argv[]) {
 	cout << "Event Queue" << endl;
 	cout << "N T S C" << endl;
 
-	for (auto const& x : q) {
-		x->PrintInfo();
+
+	while (!q.empty()) {
+		// (q.top()).PrintInfo();
+		cout << (q.top()).GetName() << " " << (q.top()).GetTime() << " " << (q.top()).GetState() << " " << (q.top()).GetCount() << endl;
+		q.pop();
 	}
 	
 	return 0;
