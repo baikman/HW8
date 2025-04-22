@@ -137,6 +137,22 @@ int main(int argc, char* argv[]) {
 		cout << (q.top()).GetName() << " " << (q.top()).GetTime() << " " << (q.top()).GetState() << " " << (q.top()).GetCount() << endl;
 		q.pop();
 	}
+
+	for (int i = 0; i < gates.size(); i++) {
+		Wire* currWire = gates.at(i)->GetOutput();
+		char tempChar = '\0';
 	
+		// Need to update currWire->GetName use GetDrives instead GetName() not needed
+
+		tempChar = evaluate(currWire->GetName(), currWire->GetInput(), currWire->GetInput(), currWire->GetOutput());
+
+		if (currWire->GetValue() != tempChar) {
+			q.emplace(Event(currWire->GetName(), /*need to declare currTime*/ (currTime + gates.at(i)->GetDelay()), tempChar, q.size() + 1));
+		} 
+
+		currWire->SetVal(tempChar);
+
+	}
+
 	return 0;
 }
