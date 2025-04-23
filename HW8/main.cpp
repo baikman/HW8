@@ -146,7 +146,7 @@ int main(int argc, char* argv[]) {
 
 		auto currVec = currWire->GetDrives();
 
-		tempChar = evaluate(currWire->GetName(), currWire->GetInput(), currWire->GetInput(), currWire->GetOutput());
+		tempChar = evaluate(currWire->GetName(), gates.at(i)->GetInput(), gates.at(i)->GetInput(), currWire->GetOutput());
 
 		if (currWire->GetValue() != tempChar) {
 			q.emplace(Event(currWire->GetName(), /*need to declare currTime*/ (currTime + gates.at(i)->GetDelay()), tempChar, q.size() + 1));
