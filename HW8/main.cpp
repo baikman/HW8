@@ -23,6 +23,7 @@ int main(int argc, char* argv[]) {
 
 	Wire* testWire1, *testWire2;  //testing
 	
+	/*
 	if (argc != 3) {
 		cout << " bad input count" << endl;
 		return 1;
@@ -31,6 +32,17 @@ int main(int argc, char* argv[]) {
 
 	cd = argv[1];
 	ic = argv[2];
+
+	*/
+
+	cout << "Enter circuit name: ";
+	cin >> cd;
+	cout << "Enter circuit discription: ";
+	cin >> ic;
+	/*
+	cd = "circuit0.txt";
+	ic = "circuit0_v.txt";
+	*/
 
 	in.open(cd);
 
@@ -166,6 +178,15 @@ int main(int argc, char* argv[]) {
 
 	}
 
+	/*
+	vector<Wire*> newWireVec;
+
+	for (int i = 0; i < wires.size(); i++) {
+		newWireVec.push_back((wires.at(i)).second);
+	}
+	*/
+
+
 	// Checking when new events are created
 	while (!q.empty()) {
 		auto currEvent = q.top();
@@ -173,41 +194,42 @@ int main(int argc, char* argv[]) {
 		string wireNm = "";
 		Wire* currentWire = NULL;
 
-		if ((currEvent->GetTime()) > 60) {
+		if ((currEvent.GetTime()) > 60) {
 			break;
 		}
 
 		for (int i = 0; i < wires.size(); i++) {
-			wireNm = ((wires.at(i)).second)->GetName();
+			wireNm = wires[i]->GetName();
 			
 			if (eventName == wireNm) {
-				currentWire = (wires.at(i)).second;
+				currentWire = wires[i];
 				break;
 			}
 		}
 
+		//need to update so it isn't GetName it is GetDrives
 		auto myVec = currentWire->GetDrives();
 
 		// Looks at all the gates a wire drives and decides whether a new event is needed based on what event just took place
 		for (int i = 0; i < myVec.size(); i++) {
 			myVec.at(i)->GetOutput();
 			char tempChar = '\0';
-			tempChar = (myVec.at(i))->evaluate(currWire->GetName(), myVec.at(i)->GetInput(1), myVec.at(i)->GetInput(2), myVec.at(i)->GetOutput());
+			tempChar = (myVec.at(i))->evaluate(myVec.at(i)->GetName(), myVec.at(i)->GetInput(1), myVec.at(i)->GetInput(2), myVec.at(i)->GetOutput());
 
-			if (currWire->GetValue() != tempChar) {
-				q.emplace(Event(currWire->GetName(), currEvent.GetTime() + (myVec.at(i))->GetDelay(), tempChar, q.size() + 1));
+			if (currentWire->GetValue() != tempChar) {
+				q.emplace(Event(currentWire->GetName(), currEvent.GetTime() + (myVec.at(i))->GetDelay(), tempChar, q.size() + 1));
 			}
 
-			currWire->SetValue(tempChar);
+			currentWire->SetValue(tempChar);
 
 		}
 
 		auto currHistVec = currentWire->GetHistory();
-		int newIndex = currentEvent->GetTime();
+		int newIndex = currEvent.GetTime();
 		
 		//Updates history
 		if (currHistVec.size() == 0) {
-			char cs = currEvent->GetState();
+			char cs = currEvent.GetState();
 			if (cs == '0') { cs = '_'; }
 			else if (cs == '1') { cs = '-';}
 			currHistVec.push_back(cs);
@@ -224,7 +246,7 @@ int main(int argc, char* argv[]) {
 				currHistVec.push_back(currCharacter);
 			}
 
-			auto tempChar = currEvent->GetState();
+			auto tempChar = currEvent.GetState();
 			if (tempChar == '0') { tempChar = '_'; }
 			else if (tempChar == '1') { tempChar = '-'; }
 			
@@ -240,30 +262,30 @@ int main(int argc, char* argv[]) {
 
 	int biggestHistoryLength = 0;
 	for (int i = 0; i < wires.size(); i++) {
-		biggestHistoryLength = (((wires.at(i)).second)->GetHistory()).size();
+		biggestHistoryLength = wires[i]->GetHistory().size();
 	}
 
 	//Updating all history vectors to be the same length
 	for (int i = 0; i < wires.size(); i++) {
-		auto tempHistVec = ((wires.at(i)).second)->GetHistory();
-		int newVal = biggestHistoryLength - tempHistVec.length();
+		auto tempHistVec = wires[i]->GetHistory();
+		int newVal = biggestHistoryLength - tempHistVec.size();
 		char tempChar = tempHistVec.back();
 		
 		for (int j = 0; j < newVal; j++) {
 			tempHistVec.push_back(tempChar);
 		}
 
-		((wires.at(i)).second)->SetHistory(tempHistVec);
+		wires[i]->SetHistory(tempHistVec);
 	}
 
 	//Print Function
 	for (int i = 0; i < wires.size(); i++) {
-		((wires.at(i)).second)->PrintHistory();
+		wires[i]->PrintHistory();
 	}
-	cout << "_____________________________" << endl;  //Not sure what the bar is supposed to be
-	cout << " 	";
+	std::cout << "_____________________________" << endl;  //Not sure what the bar is supposed to be
+	std::cout << " 	";
 	for (int i = 0; i <= currTime; i++) {
-		cout << i << " ";
+		std::cout << i << " ";
 	}
 
 	return 0;
