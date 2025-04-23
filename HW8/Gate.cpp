@@ -17,9 +17,9 @@ Wire* Gate::GetOutput() const {
 	return outputWire;
 }
 
-/*string Gate::GetName() const {
+string Gate::GetName() const {
 	return gateType;
-}*/
+}
 
 char NOT(char inp1) {
 	if (inp1 == '1') {
