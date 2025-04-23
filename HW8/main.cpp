@@ -144,6 +144,8 @@ int main(int argc, char* argv[]) {
 	
 		// Need to update currWire->GetName use GetDrives instead GetName() not needed
 
+		auto currVec = currWire->GetDrives();
+
 		tempChar = evaluate(currWire->GetName(), currWire->GetInput(), currWire->GetInput(), currWire->GetOutput());
 
 		if (currWire->GetValue() != tempChar) {
