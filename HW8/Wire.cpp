@@ -43,6 +43,7 @@ void Wire::PrintHistory() const {
 	for (char c : history) {
 		cout << c;
 	}
+	cout << endl;
 }
 
 void Wire::PrintInfo() const {
