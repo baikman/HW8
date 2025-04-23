@@ -232,10 +232,28 @@ int main(int argc, char* argv[]) {
 
 		}
 
-		currentWire.SetHistory(currHistVec);
+		currentWire->SetHistory(currHistVec);
 
 		q.pop();
 
+	}
+
+	int biggestHistoryLength = 0;
+	for (int i = 0; i < wires.size(); i++) {
+		biggestHistoryLength = (((wires.at(i)).second)->GetHistory()).size();
+	}
+
+	//Updating all history vectors to be the same length
+	for (int i = 0; i < wires.size(); i++) {
+		auto tempHistVec = ((wires.at(i)).second)->GetHistory();
+		int newVal = biggestHistoryLength - tempHistVec.length();
+		char tempChar = tempHistVec.back();
+		
+		for (int j = 0; j < newVal; j++) {
+			tempHistVec.push_back(tempChar);
+		}
+
+		((wires.at(i)).second)->SetHistory(tempHistVec);
 	}
 
 	//Print Function
