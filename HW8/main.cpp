@@ -205,7 +205,7 @@ int main(int argc, char* argv[]) {
 		for (int i = 0; i < myVec.size(); i++) {
 			myVec.at(i)->GetOutput();
 			char tempChar = '\0';
-			tempChar = (myVec.at(i))->evaluate(myVec.at(i)->GetName(), myVec.at(i)->GetInput(1), myVec.at(i)->GetInput(2), myVec.at(i)->GetOutput());
+			tempChar = (myVec.at(i))->evaluate((myVec.at(i))->GetName(), (myVec.at(i))->GetInput(1), (myVec.at(i))->GetInput(2), (myVec.at(i))->GetOutput());
 
 			if (currentWire->GetValue() != tempChar) {
 				q.emplace(Event(currentWire->GetName(), currEvent.GetTime() + (myVec.at(i))->GetDelay(), tempChar, q.size() + 1));
