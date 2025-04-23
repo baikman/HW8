@@ -58,17 +58,17 @@ int main(int argc, char* argv[]) {
 			in >> circuitName;
 		} else if (keyword == "INPUT") {
 			in >> wireName >> wireIndex;
-			myWire = new Wire('X', wireIndex, wireName, {'\0'}, {nullptr});    // What do we do with these last two??
+			myWire = new Wire('X', wireIndex, wireName, {'\0'}, {});    // What do we do with these last two??
 			wires.insert({wireIndex, myWire});
 		} else if (keyword == "OUTPUT") {
 			in >> wireName >> wireIndex;
-			myWire = new Wire('X', wireIndex, wireName, {'\0'}, {nullptr});
+			myWire = new Wire('X', wireIndex, wireName, {'\0'}, {});
 			wires.insert({wireIndex, myWire});
 		} else if (keyword == "NOT") {
 			in >> delay >> dummy >> input1 >> output;
 			// Check if output wire exists
 			if (wires.count(output) == 0) {
-				myWire = new Wire('X', output, "", { '\0' }, { nullptr });
+				myWire = new Wire('X', output, "", { '\0' }, {});
 				wires.insert({wireIndex, myWire});
 			}
 			myGate = new Gate(keyword, delay, wires[input1], nullptr, wires[output]);
@@ -81,7 +81,7 @@ int main(int argc, char* argv[]) {
 			in >> delay >> dummy >> input1 >> input2 >> output;
 			// Check if output wire exists
 			if (wires.count(output) == 0) {
-				myWire = new Wire('X', output, "", { '\0' }, { nullptr });
+				myWire = new Wire('X', output, "", { '\0' }, {});
 				wires.insert({ wireIndex, myWire });
 			}
 			myGate = new Gate(keyword, delay, wires[input1], wires[input2], wires[output]);
@@ -189,17 +189,19 @@ int main(int argc, char* argv[]) {
 			break;
 		}
 
-		for (int i = 0; i < wires.size(); i++) {
-			wireNm = wires[i]->GetName();
+		for (int i = 1; i <= wires.size(); i++) {
+			wireNm = wires.at(i)->GetName();
 			
-			if (eventName == wireNm) {
-				currentWire = wires[i];
-				break;
-			}
+			cout << wires.at(i) << endl;
+
+			//if (eventName == wireNm) {
+				currentWire = wires.at(i);
+				//break;
+			//}
 		}
 
 		//need to update so it isn't GetName it is GetDrives
-		auto myVec = currentWire->GetDrives();
+		vector<Gate*> myVec = currentWire->GetDrives();
 
 		// Looks at all the gates a wire drives and decides whether a new event is needed based on what event just took place
 		for (int i = 0; i < myVec.size(); i++) {
@@ -252,12 +254,12 @@ int main(int argc, char* argv[]) {
 	}
 
 	int biggestHistoryLength = 0;
-	for (int i = 0; i < wires.size(); i++) {
-		biggestHistoryLength = wires[i]->GetHistory().size();
+	for (int i = 1; i <= wires.size(); i++) {
+		biggestHistoryLength = (wires.at(i)->GetHistory()).size();
 	}
 
 	//Updating all history vectors to be the same length
-	for (int i = 0; i < wires.size(); i++) {
+	for (int i = 1; i <= wires.size(); i++) {
 		auto tempHistVec = wires[i]->GetHistory();
 		int newVal = biggestHistoryLength - tempHistVec.size();
 		char tempChar = tempHistVec.back();
@@ -270,13 +272,13 @@ int main(int argc, char* argv[]) {
 	}
 
 	//Print Function
-	for (int i = 0; i < wires.size(); i++) {
+	for (int i = 1; i <= wires.size(); i++) {
 		wires[i]->PrintHistory();
 	}
-	std::cout << "_____________________________" << endl;  //Not sure what the bar is supposed to be
-	std::cout << " 	";
+	cout << "_____________________________" << endl;  //Not sure what the bar is supposed to be
+	cout << " 	";
 	for (int i = 0; i <= currTime; i++) {
-		std::cout << i << " ";
+		cout << i << " ";
 	}
 
 	return 0;
