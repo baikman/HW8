@@ -159,7 +159,7 @@ int main(int argc, char* argv[]) {
 
 		Wire* currWire = gates.at(i)->GetOutput();
 		char tempChar = '\0';
-		currTime += gates.at(i)->GetDelay();
+		currTime += (gates.at(i))->GetDelay();
 
 		// Need to update currWire->GetName use GetDrives instead GetName() not needed
 
@@ -168,7 +168,7 @@ int main(int argc, char* argv[]) {
 		//currVec.at(0)->GetName();
 		//we wouldn't need GetName() if we implemented each gate when it gets made...
 
-		tempChar = (gates.at(i))->evaluate(currWire->GetName(), gates.at(i)->GetInput(1), gates.at(i)->GetInput(2), gates.at(i)->GetOutput());
+		tempChar = (gates.at(i))->evaluate(currWire->GetName(), (gates.at(i))->GetInput(1), (gates.at(i))->GetInput(2), (gates.at(i))->GetOutput());
 
 		if (currWire->GetValue() != tempChar) {
 			q.emplace(Event(currWire->GetName(), currTime, tempChar, q.size() + 1));
@@ -177,15 +177,6 @@ int main(int argc, char* argv[]) {
 		currWire->SetValue(tempChar);
 
 	}
-
-	/*
-	vector<Wire*> newWireVec;
-
-	for (int i = 0; i < wires.size(); i++) {
-		newWireVec.push_back((wires.at(i)).second);
-	}
-	*/
-
 
 	// Checking when new events are created
 	while (!q.empty()) {
