@@ -17,7 +17,7 @@ public:
 	int GetDelay() const;
 	Wire* GetInput(int input) const;
 	Wire* GetOutput() const;
-	char evaluate(string type, Wire* input1, Wire* input2, Wire* output);//const?
+	char evaluate(/*string type,*/ Wire* input1, Wire* input2, Wire* output);//const?
 	void PrintInfo();//const
 
 private:

@@ -80,10 +80,10 @@ char XNOR(char inp1, char inp2) {
 	return NOT(XOR(inp1, inp2));
 }
 
-char Gate::evaluate(string type, Wire* input1, Wire* input2, Wire* output)  {
+char Gate::evaluate(/*string type,*/ Wire* input1, Wire* input2, Wire* output) {
 	char inp1 = input1->GetValue();
 	char inp2 = input2->GetValue();
-	switch (gateTypes[type]) {
+	switch (gateTypes[gateType]) {
 	case 1:
 		return NOT(inp1);
 	case 2:
@@ -105,5 +105,5 @@ char Gate::evaluate(string type, Wire* input1, Wire* input2, Wire* output)  {
 }
 
 void Gate::PrintInfo()  {
-	cout << evaluate(gateType, input1, input2, outputWire) << endl;
+	cout << evaluate(/*gateType, */input1, input2, outputWire) << endl;
 }

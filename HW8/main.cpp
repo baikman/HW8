@@ -37,8 +37,10 @@ int main(int argc, char* argv[]) {
 
 	cout << "Enter circuit name: ";
 	cin >> cd;
-	cout << "Enter circuit discription: ";
-	cin >> ic;
+	ic = cd + "_v.txt";
+	cd = cd + ".txt";
+	//cout << "Enter circuit discription: ";
+	//cin >> ic;
 	/*
 	cd = "circuit0.txt";
 	ic = "circuit0_v.txt";
@@ -168,8 +170,8 @@ int main(int argc, char* argv[]) {
 		//currVec.at(0)->GetName();
 		//we wouldn't need GetName() if we implemented each gate when it gets made...
 
-		tempChar = (gates.at(i))->evaluate((gates.at(i))->GetName(), (gates.at(i))->GetInput(1), (gates.at(i))->GetInput(2), (gates.at(i))->GetOutput());
-		auto tc = currWire->GetValue();
+		tempChar = (gates.at(i))->evaluate(/*(gates.at(i))->GetName(), */ (gates.at(i))->GetInput(1), (gates.at(i))->GetInput(2), (gates.at(i))->GetOutput());
+		//auto tc = currWire->GetValue();
 		if (currWire->GetValue() != tempChar) {
 			//cout << currWire->GetName() << endl;
 			q.emplace(Event(currWire->GetName(), currTime, tempChar, q.size() + 1));
@@ -179,12 +181,15 @@ int main(int argc, char* argv[]) {
 
 	}
 
+	int lastTime = -1;
+
 	// Checking when new events are created
 	while (!q.empty()) {
 		auto currEvent = q.top();
 		string eventName = currEvent.GetName();
 		string wireNm = "";
-		Wire* currentWire = NULL;
+		Wire* currentOutWire = NULL;
+		Wire* wireDriver = NULL;
 
 		cout << (q.top()).GetName() << " " << (q.top()).GetTime() << " " << (q.top()).GetState() << " " << (q.top()).GetCount() << endl;
 
@@ -192,35 +197,76 @@ int main(int argc, char* argv[]) {
 			break;
 		}
 
+
+		char tmpChr = currEvent.GetState();
+
+		for (int i = 1; i < wires.size(); i++) {
+			auto tempName = (wires.at(i))->GetName();
+			if (tempName == eventName) {
+				(wires.at(i))->SetValue(tmpChr);
+				wireDriver = wires.at(i);
+				break;
+			}
+		}
+
+		
+		auto vecDrives = wireDriver->GetDrives();
+		
+		Wire* currWire = NULL;
+
+		if (vecDrives.size() != 0) {
+
+			for (int i = 0; i < vecDrives.size(); i++) {
+				currWire = (vecDrives.at(i))->GetOutput();
+				auto currVal = currWire->GetValue();
+
+				char tempChar = '\0';
+				tempChar = (vecDrives.at(i))->evaluate((vecDrives.at(i))->GetInput(1), (vecDrives.at(i))->GetInput(2), currWire);
+
+				cout << wireDriver->GetValue() << endl;
+				cout << "tempChar: " << tempChar << endl;
+				cout << "currVal: " << currVal << endl;
+
+				if (currVal != tempChar) {
+					q.emplace(Event(currWire->GetName(), currEvent.GetTime() + (vecDrives.at(i))->GetDelay(), tempChar, q.size() + 1));
+					cout << "New Event Created" << endl;
+				}
+
+			}
+
+		}
+
+		/*
 		for (int i = 1; i <= wires.size(); i++) {
 			wireNm = wires.at(i)->GetName();
 			
-			cout << wires.at(i) << endl;
+			//cout << wires.at(i) << endl;
 
 			if (eventName == wireNm) {
-				currentWire = wires.at(i);
-				//break;
+				currentOutWire = wires.at(i);
+				break;
 			}
 		}
 
 		//need to update so it isn't GetName it is GetDrives
-		vector<Gate*> myVec = currentWire->GetDrives();
+		vector<Gate*> myVec = currentOutWire->GetDrives();
 
 		// Looks at all the gates a wire drives and decides whether a new event is needed based on what event just took place
 		for (int i = 0; i < myVec.size(); i++) {
 			myVec.at(i)->GetOutput();
 			char tempChar = '\0';
-			tempChar = (myVec.at(i))->evaluate((myVec.at(i))->GetName(), (myVec.at(i))->GetInput(1), (myVec.at(i))->GetInput(2), (myVec.at(i))->GetOutput());
+			tempChar = (myVec.at(i))->evaluate(/*myVec.at(i))->GetName(), (myVec.at(i))->GetInput(1), (myVec.at(i))->GetInput(2), (myVec.at(i))->GetOutput());
 
-			if (currentWire->GetValue() != tempChar) {
-				q.emplace(Event(currentWire->GetName(), currEvent.GetTime() + (myVec.at(i))->GetDelay(), tempChar, q.size() + 1));
+			if (currentOutWire->GetValue() != tempChar) {
+				q.emplace(Event(currentOutWire->GetName(), currEvent.GetTime() + (myVec.at(i))->GetDelay(), tempChar, q.size() + 1));
 			}
 
-			currentWire->SetValue(tempChar);
+			currentOutWire->SetValue(tempChar);
 
 		}
+	*/
 
-		auto currHistVec = currentWire->GetHistory();
+		auto currHistVec = currWire->GetHistory();
 		int newIndex = currEvent.GetTime();
 		
 		//Updates history
@@ -250,21 +296,25 @@ int main(int argc, char* argv[]) {
 
 		}
 
-		currentWire->SetHistory(currHistVec);
+		currWire->SetHistory(currHistVec);
+
+		lastTime = currEvent.GetTime();
 
 		q.pop();
 
-	}
 
+	}
+	/*
 	int biggestHistoryLength = 0;
 	for (int i = 1; i <= wires.size(); i++) {
-		biggestHistoryLength = (wires.at(i)->GetHistory()).size();
-	}
+		auto tempVec = (wires.at(i)->GetHistory());
+		biggestHistoryLength = tempVec.size();
+	}*/
 
 	//Updating all history vectors to be the same length
 	for (int i = 1; i <= wires.size(); i++) {
 		auto tempHistVec = wires[i]->GetHistory();
-		int newVal = biggestHistoryLength - tempHistVec.size();
+		int newVal = lastTime - tempHistVec.size();
 		char tempChar = tempHistVec.back();
 		
 		for (int j = 0; j < newVal; j++) {
@@ -280,8 +330,8 @@ int main(int argc, char* argv[]) {
 	}
 	cout << "_____________________________" << endl;  //Not sure what the bar is supposed to be
 	cout << " 	";
-	for (int i = 0; i <= currTime; i++) {
-		cout << i << " ";
+	for (int i = 0; i <= lastTime; i++) {
+		cout << i;
 	}
 
 	return 0;
