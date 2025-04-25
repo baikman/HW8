@@ -17,10 +17,6 @@ Wire* Gate::GetOutput() const {
 	return outputWire;
 }
 
-string Gate::GetName() const {
-	return gateType;
-}
-
 char NOT(char inp1) {
 	if (inp1 == '1') {
 		return '0';
@@ -80,9 +76,12 @@ char XNOR(char inp1, char inp2) {
 	return NOT(XOR(inp1, inp2));
 }
 
-char Gate::evaluate(/*string type,*/ Wire* input1, Wire* input2, Wire* output) {
+char Gate::evaluate(Wire* input1, Wire* input2, Wire* output) {
 	char inp1 = input1->GetValue();
-	char inp2 = input2->GetValue();
+	char inp2 = 'z';
+	if (gateTypes[gateType] != 1) {
+		char inp2 = input2->GetValue();
+	}
 	switch (gateTypes[gateType]) {
 	case 1:
 		return NOT(inp1);

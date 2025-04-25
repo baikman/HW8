@@ -8,12 +8,13 @@ using namespace std;
 class Event {
 public:
     // We don't need a default constructor
-    Event(string nm, int t, char val, int cnt) : name(nm), time(t), state(val), count(cnt) {};
+    Event(string nm, int t, char val, int cnt, int indx) : name(nm), time(t), state(val), count(cnt), wireIndex(indx) {};
     
     string GetName() const;
     int GetTime() const;
     char GetState() const;
     int GetCount() const;
+    int GetIndex() const;
 
     void PrintInfo();
 
@@ -31,7 +32,7 @@ public:
     */
 private:
     string name;
-    int time, count;  
+    int time, count, wireIndex;  
     char state;
 };
 

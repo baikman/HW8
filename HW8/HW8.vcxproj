@@ -32,6 +32,8 @@
   <ItemGroup>
     <Text Include="circuit0.txt" />
     <Text Include="circuit0_v.txt" />
+    <Text Include="circuit1.txt" />
+    <Text Include="circuit1_v.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

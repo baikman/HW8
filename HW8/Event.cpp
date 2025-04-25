@@ -19,6 +19,10 @@ int Event::GetCount() const {
     return count;
 }
 
+int Event::GetIndex() const {
+    return wireIndex;
+}
+
 void Event::PrintInfo()  {
 	cout << name << " " << time << " " << state << " " << count << endl;
 }

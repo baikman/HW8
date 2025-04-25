@@ -10,41 +10,22 @@
 
 using namespace std;
 
-int main(int argc, char* argv[]) {
+int main() {
 	priority_queue<Event, vector<Event>, Comparator> q;
 	string cd, ic, keyword, circuitName, wireName, vectorName, dummy;
 	map<int, Wire*> wires; // use map::count to check existence
 	vector<Gate*> gates;
+	vector<string> displayedWires;
 	Wire* myWire;
 	Gate* myGate;
 	int delay, wireIndex, input1, input2, output, wTime;
 	ifstream in;
 	char state;
-
-	Wire* testWire1, *testWire2;  //testing
-	
-	/*
-	if (argc != 3) {
-		cout << " bad input count" << endl;
-		return 1;
-	}
-	
-
-	cd = argv[1];
-	ic = argv[2];
-
-	*/
-
 	cout << "Enter circuit name: ";
 	cin >> cd;
 	ic = cd + "_v.txt";
 	cd = cd + ".txt";
-	//cout << "Enter circuit discription: ";
-	//cin >> ic;
-	/*
-	cd = "circuit0.txt";
-	ic = "circuit0_v.txt";
-	*/
+
 
 	in.open(cd);
 
@@ -71,28 +52,25 @@ int main(int argc, char* argv[]) {
 			// Check if output wire exists
 			if (wires.count(output) == 0) {
 				myWire = new Wire('X', output, "", { '\0' }, {});
-				wires.insert({wireIndex, myWire});
+				wires.insert({output, myWire});
 			}
 			myGate = new Gate(keyword, delay, wires[input1], nullptr, wires[output]);
 			gates.push_back(myGate);
 			// temp done. TODO?: set input1's drives to the new gate
-			testWire1 = wires[input1];
-			testWire1->AddDrive(myGate);
+			wires[input1]->AddDrive(myGate);
 		} else if (keyword == "AND" || keyword == "OR" || keyword == "XOR" || 
 				   keyword == "NAND" || keyword == "NOR" || keyword == "XNOR") {
 			in >> delay >> dummy >> input1 >> input2 >> output;
 			// Check if output wire exists
 			if (wires.count(output) == 0) {
 				myWire = new Wire('X', output, "", { '\0' }, {});
-				wires.insert({ wireIndex, myWire });
+				wires.insert({ output, myWire });
 			}
 			myGate = new Gate(keyword, delay, wires[input1], wires[input2], wires[output]);
 			gates.push_back(myGate);
 			// temp done. TODO?: set input1 and input2's drives to the new gate
-			testWire1 = wires[input1];
-			testWire2 = wires[input2];
-			testWire1->AddDrive(myGate);
-			testWire2->AddDrive(myGate);
+			wires[input1]->AddDrive(myGate);
+			wires[input2]->AddDrive(myGate);
 		} 
 
 		in >> keyword;
@@ -119,7 +97,7 @@ int main(int argc, char* argv[]) {
 		else if (keyword == "INPUT") {
 			in >> wireName >> wTime >> state;
 
-			q.emplace(Event(wireName, wTime, state, q.size() + 1));
+			q.emplace(Event(wireName, wTime, state, q.size() + 1, -1));
 
 		}
 		in >> keyword;
@@ -145,14 +123,13 @@ int main(int argc, char* argv[]) {
 	cout << "Event Queue" << endl;
 	cout << "N T S C" << endl;
 
-	/*
-	while (!q.empty()) {
-		// (q.top()).PrintInfo();
-		cout << (q.top()).GetName() << " " << (q.top()).GetTime() << " " << (q.top()).GetState() << " " << (q.top()).GetCount() << endl;
-		q.pop();
-	}*/
+	
+
+	// ABOVE IS FINE
 
 	//Create new events from gates
+	
+	/*
 	int currTime = 0;
 	for (int i = 0; i < gates.size(); i++) {
 		if (currTime > 60) {
@@ -160,113 +137,113 @@ int main(int argc, char* argv[]) {
 		}
 
 		Wire* currWire = gates.at(i)->GetOutput();
-		char tempChar = '\0';
+		char postState = '\0';
 		currTime += (gates.at(i))->GetDelay();
 
-		// Need to update currWire->GetName use GetDrives instead GetName() not needed
-
-		//auto currVec = currWire->GetDrives();
-
-		//currVec.at(0)->GetName();
-		//we wouldn't need GetName() if we implemented each gate when it gets made...
-
-		tempChar = (gates.at(i))->evaluate(/*(gates.at(i))->GetName(), */ (gates.at(i))->GetInput(1), (gates.at(i))->GetInput(2), (gates.at(i))->GetOutput());
+		postState = (gates.at(i))->evaluate((gates.at(i))->GetInput(1), (gates.at(i))->GetInput(2), (gates.at(i))->GetOutput());
 		//auto tc = currWire->GetValue();
-		if (currWire->GetValue() != tempChar) {
+		if (currWire->GetValue() != postState) {
 			//cout << currWire->GetName() << endl;
-			q.emplace(Event(currWire->GetName(), currTime, tempChar, q.size() + 1));
+			q.emplace(Event(currWire->GetName(), currTime, postState, q.size() + 1));
 		}
 
-		currWire->SetValue(tempChar);
-
+		currWire->SetValue(postState);
 	}
+	
+	while (!q.empty()) {
+		cout << (q.top()).GetName() << " " << (q.top()).GetTime() << " " << (q.top()).GetState() << " " << (q.top()).GetCount() << endl;
+		q.pop();
+	}
+	*/
 
 	int lastTime = -1;
 
 	// Checking when new events are created
+
+	Event currEvent = q.top();
+	string eventName, wireNm;
+	int wireIndx;
+	Wire* wireDriver;
+	int qSize = q.size();
 	while (!q.empty()) {
-		auto currEvent = q.top();
-		string eventName = currEvent.GetName();
-		string wireNm = "";
-		Wire* currentOutWire = NULL;
-		Wire* wireDriver = NULL;
+		currEvent = q.top();
+		wireDriver = NULL;
 
 		cout << (q.top()).GetName() << " " << (q.top()).GetTime() << " " << (q.top()).GetState() << " " << (q.top()).GetCount() << endl;
 
-		if ((currEvent.GetTime()) > 60) {
-			break;
-		}
 
-
-		char tmpChr = currEvent.GetState();
-
-		for (int i = 1; i < wires.size(); i++) {
-			auto tempName = (wires.at(i))->GetName();
-			if (tempName == eventName) {
-				(wires.at(i))->SetValue(tmpChr);
-				wireDriver = wires.at(i);
+		if (currEvent.GetName() == "") {
+			wireIndx = currEvent.GetIndex();
+			if ((currEvent.GetTime()) > 60) {
 				break;
 			}
-		}
 
-		
-		auto vecDrives = wireDriver->GetDrives();
-		
-		Wire* currWire = NULL;
+			char tmpChr = currEvent.GetState();
 
-		if (vecDrives.size() != 0) {
-
-			for (int i = 0; i < vecDrives.size(); i++) {
-				currWire = (vecDrives.at(i))->GetOutput();
-				auto currVal = currWire->GetValue();
-
-				char tempChar = '\0';
-				tempChar = (vecDrives.at(i))->evaluate((vecDrives.at(i))->GetInput(1), (vecDrives.at(i))->GetInput(2), currWire);
-
-				cout << wireDriver->GetValue() << endl;
-				cout << "tempChar: " << tempChar << endl;
-				cout << "currVal: " << currVal << endl;
-
-				if (currVal != tempChar) {
-					q.emplace(Event(currWire->GetName(), currEvent.GetTime() + (vecDrives.at(i))->GetDelay(), tempChar, q.size() + 1));
-					cout << "New Event Created" << endl;
+			for (const auto& pair : wires) {
+				if (pair.second->GetIndex() == wireIndx) {
+					pair.second->SetValue(tmpChr);
+					wireDriver = pair.second;
+					break;
 				}
-
 			}
 
+			Wire* currWire = NULL;
+
+			if (!(wireDriver->GetDrives()).empty()) {
+				vector<Gate*> drivenGates = wireDriver->GetDrives();
+
+				for (int i = 0; i < drivenGates.size(); i++) {
+					currWire = (drivenGates.at(i))->GetOutput();
+					char currVal = currWire->GetValue();
+
+					char evalState = (drivenGates.at(i))->evaluate((drivenGates.at(i))->GetInput(1), (drivenGates.at(i))->GetInput(2), currWire);
+
+					if (currVal != evalState) {
+						qSize++;
+						q.emplace(Event(currWire->GetName(), currEvent.GetTime() + (drivenGates.at(i))->GetDelay(), evalState, qSize, currWire->GetIndex()));
+
+					}
+				}
+			}
 		}
-
-		/*
-		for (int i = 1; i <= wires.size(); i++) {
-			wireNm = wires.at(i)->GetName();
-			
-			//cout << wires.at(i) << endl;
-
-			if (eventName == wireNm) {
-				currentOutWire = wires.at(i);
+		else {
+			eventName = currEvent.GetName();
+			if ((currEvent.GetTime()) > 60) {
 				break;
 			}
-		}
 
-		//need to update so it isn't GetName it is GetDrives
-		vector<Gate*> myVec = currentOutWire->GetDrives();
+			char tmpChr = currEvent.GetState();
 
-		// Looks at all the gates a wire drives and decides whether a new event is needed based on what event just took place
-		for (int i = 0; i < myVec.size(); i++) {
-			myVec.at(i)->GetOutput();
-			char tempChar = '\0';
-			tempChar = (myVec.at(i))->evaluate(/*myVec.at(i))->GetName(), (myVec.at(i))->GetInput(1), (myVec.at(i))->GetInput(2), (myVec.at(i))->GetOutput());
-
-			if (currentOutWire->GetValue() != tempChar) {
-				q.emplace(Event(currentOutWire->GetName(), currEvent.GetTime() + (myVec.at(i))->GetDelay(), tempChar, q.size() + 1));
+			for (const auto& pair : wires) {
+				if (pair.second->GetName() == eventName) {
+					pair.second->SetValue(tmpChr);
+					wireDriver = pair.second;
+					break;
+				}
 			}
 
-			currentOutWire->SetValue(tempChar);
+			Wire* currWire = NULL;
 
+			if (!(wireDriver->GetDrives()).empty()) {
+				vector<Gate*> drivenGates = wireDriver->GetDrives();
+
+				for (int i = 0; i < drivenGates.size(); i++) {
+					currWire = (drivenGates.at(i))->GetOutput();
+					char currVal = currWire->GetValue();
+
+					char evalState = (drivenGates.at(i))->evaluate((drivenGates.at(i))->GetInput(1), (drivenGates.at(i))->GetInput(2), currWire);
+
+					if (currVal != evalState) {
+						qSize++;
+						q.emplace(Event(currWire->GetName(), currEvent.GetTime() + (drivenGates.at(i))->GetDelay(), evalState, qSize, currWire->GetIndex()));
+
+					}
+				}
+			}
 		}
-	*/
-
-		auto currHistVec = currWire->GetHistory();
+		
+		vector<char> currHistVec = wireDriver->GetHistory();
 		int newIndex = currEvent.GetTime();
 		
 		//Updates history
@@ -288,45 +265,42 @@ int main(int argc, char* argv[]) {
 				currHistVec.push_back(currCharacter);
 			}
 
-			auto tempChar = currEvent.GetState();
-			if (tempChar == '0') { tempChar = '_'; }
-			else if (tempChar == '1') { tempChar = '-'; }
+			auto postState = currEvent.GetState();
+			if (postState == '0') { postState = '_'; }
+			else if (postState == '1') { postState = '-'; }
 			
-			currHistVec.push_back(tempChar);
+			currHistVec.push_back(postState);
 
 		}
 
-		currWire->SetHistory(currHistVec);
+		wireDriver->SetHistory(currHistVec);
 
 		lastTime = currEvent.GetTime();
+		
 
 		q.pop();
 
 
 	}
-	/*
-	int biggestHistoryLength = 0;
-	for (int i = 1; i <= wires.size(); i++) {
-		auto tempVec = (wires.at(i)->GetHistory());
-		biggestHistoryLength = tempVec.size();
-	}*/
 
 	//Updating all history vectors to be the same length
 	for (int i = 1; i <= wires.size(); i++) {
-		auto tempHistVec = wires[i]->GetHistory();
+		vector<char> tempHistVec = wires[i]->GetHistory();
 		int newVal = lastTime - tempHistVec.size();
-		char tempChar = tempHistVec.back();
+		char lastChar = tempHistVec.back();
 		
 		for (int j = 0; j < newVal; j++) {
-			tempHistVec.push_back(tempChar);
+			tempHistVec.push_back(lastChar);
 		}
 
 		wires[i]->SetHistory(tempHistVec);
 	}
 
-	//Print Function
-	for (int i = 1; i <= wires.size(); i++) {
-		wires[i]->PrintHistory();
+	//Print Simulation
+	for (const auto& pair : wires) {
+		if (pair.second->GetName() != "") {
+			pair.second->PrintHistory();
+		}
 	}
 	cout << "_____________________________" << endl;  //Not sure what the bar is supposed to be
 	cout << " 	";

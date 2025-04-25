@@ -13,7 +13,6 @@ public:
 	Gate(string type, int delay, Wire* in1, Wire* in2, Wire* output) : gateType(type), 
 		delayTime(delay), input1(in1), input2(in2), outputWire(output) {};
 	
-	string GetName() const;  //Ask about adding this
 	int GetDelay() const;
 	Wire* GetInput(int input) const;
 	Wire* GetOutput() const;
