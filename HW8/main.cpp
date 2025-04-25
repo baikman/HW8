@@ -41,17 +41,17 @@ int main() {
 			in >> circuitName;
 		} else if (keyword == "INPUT") {
 			in >> wireName >> wireIndex;
-			myWire = new Wire('X', wireIndex, wireName, {'\0'}, {});    // What do we do with these last two??
+			myWire = new Wire('X', wireIndex, wireName, {}, {});
 			wires.insert({wireIndex, myWire});
 		} else if (keyword == "OUTPUT") {
 			in >> wireName >> wireIndex;
-			myWire = new Wire('X', wireIndex, wireName, {'\0'}, {});
+			myWire = new Wire('X', wireIndex, wireName, {}, {});
 			wires.insert({wireIndex, myWire});
 		} else if (keyword == "NOT") {
 			in >> delay >> dummy >> input1 >> output;
 			// Check if output wire exists
 			if (wires.count(output) == 0) {
-				myWire = new Wire('X', output, "", { '\0' }, {});
+				myWire = new Wire('X', output, "", {}, {});
 				wires.insert({output, myWire});
 			}
 			myGate = new Gate(keyword, delay, wires[input1], nullptr, wires[output]);
@@ -63,7 +63,7 @@ int main() {
 			in >> delay >> dummy >> input1 >> input2 >> output;
 			// Check if output wire exists
 			if (wires.count(output) == 0) {
-				myWire = new Wire('X', output, "", { '\0' }, {});
+				myWire = new Wire('X', output, "", {}, {});
 				wires.insert({ output, myWire });
 			}
 			myGate = new Gate(keyword, delay, wires[input1], wires[input2], wires[output]);
@@ -106,16 +106,12 @@ int main() {
 	// Close IC file
 	in.close();
 
-	cout << "Testing parsing: first wires:" << endl;
-	for (auto const& x : wires) {
-		cout << x.first << " " << x.second->GetValue() << endl;
-	}
-
-	cout << "gates: " << endl;
-
 	for (auto const& x : gates) {
-		x->PrintInfo();
-		cout << endl;
+		vector<char> tempHistory(0);
+		for (int i = 0; i < x->GetDelay(); i++) {
+			tempHistory.push_back('X');
+			(x->GetOutput())->SetHistory(tempHistory);
+		}
 	}
 
 
@@ -127,39 +123,9 @@ int main() {
 
 	// ABOVE IS FINE
 
-	//Create new events from gates
-	
-	/*
-	int currTime = 0;
-	for (int i = 0; i < gates.size(); i++) {
-		if (currTime > 60) {
-			break;
-		}
-
-		Wire* currWire = gates.at(i)->GetOutput();
-		char postState = '\0';
-		currTime += (gates.at(i))->GetDelay();
-
-		postState = (gates.at(i))->evaluate((gates.at(i))->GetInput(1), (gates.at(i))->GetInput(2), (gates.at(i))->GetOutput());
-		//auto tc = currWire->GetValue();
-		if (currWire->GetValue() != postState) {
-			//cout << currWire->GetName() << endl;
-			q.emplace(Event(currWire->GetName(), currTime, postState, q.size() + 1));
-		}
-
-		currWire->SetValue(postState);
-	}
-	
-	while (!q.empty()) {
-		cout << (q.top()).GetName() << " " << (q.top()).GetTime() << " " << (q.top()).GetState() << " " << (q.top()).GetCount() << endl;
-		q.pop();
-	}
-	*/
-
 	int lastTime = -1;
 
 	// Checking when new events are created
-
 	Event currEvent = q.top();
 	string eventName, wireNm;
 	int wireIndx;
@@ -202,6 +168,7 @@ int main() {
 					if (currVal != evalState) {
 						qSize++;
 						q.emplace(Event(currWire->GetName(), currEvent.GetTime() + (drivenGates.at(i))->GetDelay(), evalState, qSize, currWire->GetIndex()));
+						currWire->SetValue(evalState);
 
 					}
 				}
@@ -237,7 +204,7 @@ int main() {
 					if (currVal != evalState) {
 						qSize++;
 						q.emplace(Event(currWire->GetName(), currEvent.GetTime() + (drivenGates.at(i))->GetDelay(), evalState, qSize, currWire->GetIndex()));
-
+						currWire->SetValue(evalState);
 					}
 				}
 			}
@@ -258,9 +225,7 @@ int main() {
 			if (currCharacter == '0') { currCharacter = '_'; }
 			else if (currCharacter == '1') { currCharacter = '-'; }
 			
-			currHistVec.push_back(currCharacter);
-
-			for (int i = 0; i < updateVal; i++) {
+			for (int i = 1; i < updateVal; i++) {
 				
 				currHistVec.push_back(currCharacter);
 			}
@@ -276,24 +241,22 @@ int main() {
 		wireDriver->SetHistory(currHistVec);
 
 		lastTime = currEvent.GetTime();
-		
 
 		q.pop();
-
 
 	}
 
 	//Updating all history vectors to be the same length
-	for (int i = 1; i <= wires.size(); i++) {
-		vector<char> tempHistVec = wires[i]->GetHistory();
+	for (const auto& pair : wires) {
+		vector<char> tempHistVec = pair.second->GetHistory();
 		int newVal = lastTime - tempHistVec.size();
 		char lastChar = tempHistVec.back();
 		
-		for (int j = 0; j < newVal; j++) {
+		for (int j = 0; j <= newVal; j++) {
 			tempHistVec.push_back(lastChar);
 		}
 
-		wires[i]->SetHistory(tempHistVec);
+		pair.second->SetHistory(tempHistVec);
 	}
 
 	//Print Simulation
@@ -302,10 +265,22 @@ int main() {
 			pair.second->PrintHistory();
 		}
 	}
-	cout << "_____________________________" << endl;  //Not sure what the bar is supposed to be
-	cout << " 	";
+	cout << "\n       ";
 	for (int i = 0; i <= lastTime; i++) {
-		cout << i;
+		cout << "_";
+	}
+	cout << "\n 	";
+	for (int i = 0; i <= lastTime; i += 5) {
+		cout << i / 10 << "----";
+	}
+	cout << "\n 	";
+	for (int i = 0; i <= lastTime; i += 5) {
+		if (i % 2 == 0) {
+			cout << 0 << "    ";
+		}
+		else {
+			cout << 5 << "    ";
+		}
 	}
 
 	return 0;

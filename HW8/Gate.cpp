@@ -80,7 +80,7 @@ char Gate::evaluate(Wire* input1, Wire* input2, Wire* output) {
 	char inp1 = input1->GetValue();
 	char inp2 = 'z';
 	if (gateTypes[gateType] != 1) {
-		char inp2 = input2->GetValue();
+		inp2 = input2->GetValue();
 	}
 	switch (gateTypes[gateType]) {
 	case 1:

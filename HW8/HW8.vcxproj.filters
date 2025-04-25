@@ -44,5 +44,25 @@
     <Text Include="circuit0_v.txt" />
     <Text Include="circuit1.txt" />
     <Text Include="circuit1_v.txt" />
+    <Text Include="circuit2.txt" />
+    <Text Include="circuit2_v.txt" />
+    <Text Include="circuit3.txt" />
+    <Text Include="circuit3_v.txt" />
+    <Text Include="circuit4.txt" />
+    <Text Include="circuit4_v.txt" />
+    <Text Include="circuit5.txt" />
+    <Text Include="circuit5_v.txt" />
+    <Text Include="circuit6.txt" />
+    <Text Include="circuit6_v.txt" />
+    <Text Include="circuit7.txt" />
+    <Text Include="circuit7_v.txt" />
+    <Text Include="circuit8.txt" />
+    <Text Include="circuit8_v.txt" />
+    <Text Include="circuit9.txt" />
+    <Text Include="circuit9_v.txt" />
+    <Text Include="flipflop.txt" />
+    <Text Include="flipflop_v.txt" />
+    <Text Include="flipflop2.txt" />
+    <Text Include="flipflop2_v.txt" />
   </ItemGroup>
 </Project>
