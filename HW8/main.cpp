@@ -23,8 +23,6 @@ int main() {
 	ifstream in;
 	char state;
 
-
-	
 	cout << "Enter circuit name: ";
 	cin >> cd;
 	ic = cd + "_v.txt";
@@ -59,8 +57,9 @@ int main() {
 			if (wires.count(output) == 0) {
 				myWire = new Wire('X', output, "", {}, {});
 				wires.insert({output, myWire});
-				statePairs.insert({ output, {'X', 'X'} });
 			}
+			statePairs.insert({ input1, {'X', 'X'} });
+			statePairs.insert({ output, {'X', 'X'} });
 			myGate = new Gate(keyword, delay, wires[input1], nullptr, wires[output]);
 			gates.push_back(myGate);
 			wires[input1]->AddDrive(myGate);
@@ -71,8 +70,10 @@ int main() {
 			if (wires.count(output) == 0) {
 				myWire = new Wire('X', output, "", {}, {});
 				wires.insert({ output, myWire });
-				statePairs.insert({ output, {'X', 'X'} });
 			}
+			statePairs.insert({ input1, {'X', 'X'} });
+			statePairs.insert({ input2, {'X', 'X'} });
+			statePairs.insert({ output, {'X', 'X'} });
 			myGate = new Gate(keyword, delay, wires[input1], wires[input2], wires[output]);
 			gates.push_back(myGate);
 			wires[input1]->AddDrive(myGate);
@@ -102,9 +103,7 @@ int main() {
 
 		else if (keyword == "INPUT") {
 			in >> wireName >> wTime >> state;
-
 			q.emplace(Event(wireName, wTime, state, q.size() + 1, -1));
-
 		}
 		in >> keyword;
 	}
@@ -120,14 +119,6 @@ int main() {
 		}
 	}
 
-	// Printing Events
-	cout << "Event Queue" << endl;
-	cout << "N T S C" << endl;
-
-	
-
-	// ABOVE IS FINE
-
 	int lastTime = -1;
 
 	// Checking when new events are created
@@ -139,9 +130,6 @@ int main() {
 	while (!q.empty()) {
 		currEvent = q.top();
 		wireDriver = NULL;
-
-		cout << (q.top()).GetName() << " " << (q.top()).GetTime() << " " << (q.top()).GetState() << " " << (q.top()).GetCount() << endl;
-
 
 		if (currEvent.GetName() == "") {
 			eventIndx = currEvent.GetIndex();
@@ -169,13 +157,14 @@ int main() {
 					char currVal = currWire->GetValue();
 					wireIndx = currWire->GetIndex();
 
-					char evalState = (drivenGates.at(i))->evaluate((drivenGates.at(i))->GetInput(1), (drivenGates.at(i))->GetInput(2), currWire);
+					char evalState = (drivenGates.at(i))->evaluate((drivenGates.at(i))->GetInput(1),
+						(drivenGates.at(i))->GetInput(2), currWire);
 
-					if (currVal != evalState) {
+					if ((statePairs.at(wireIndx)).at(1) != evalState) {
 						qSize++;
-						q.emplace(Event(currWire->GetName(), currEvent.GetTime() + drivenGates.at(i)->GetDelay(), evalState, qSize, currWire->GetIndex()));
-						wireIndx = currEvent.GetIndex();
-						//currWire->SetValue(evalState);
+						q.emplace(Event(currWire->GetName(), currEvent.GetTime() + 
+							drivenGates.at(i)->GetDelay(), evalState, qSize, currWire->GetIndex()));
+						wireIndx = currWire->GetIndex();
 
 						(statePairs.at(wireIndx)).at(0) = currVal;
 						(statePairs.at(wireIndx)).at(1) = evalState;
@@ -210,12 +199,15 @@ int main() {
 					char currVal = currWire->GetValue();
 					wireIndx = currWire->GetIndex();
 
-					char evalState = (drivenGates.at(i))->evaluate((drivenGates.at(i))->GetInput(1), (drivenGates.at(i))->GetInput(2), currWire);
+					char evalState = (drivenGates.at(i))->evaluate(
+						(drivenGates.at(i))->GetInput(1),(drivenGates.at(i))->GetInput(2), 
+						currWire);
 
-					if (currVal != evalState) {
+					if ((statePairs.at(wireIndx)).at(1) != evalState) {
 						qSize++;
-						q.emplace(Event(currWire->GetName(), currEvent.GetTime() + (drivenGates.at(i))->GetDelay(), evalState, qSize, currWire->GetIndex()));
-						//currWire->SetValue(evalState);
+						q.emplace(Event(currWire->GetName(), currEvent.GetTime() + 
+							(drivenGates.at(i))->GetDelay(), evalState, qSize, 
+							currWire->GetIndex()));
 
 						(statePairs.at(wireIndx)).at(0) = currVal;
 						(statePairs.at(wireIndx)).at(1) = evalState;
@@ -239,11 +231,6 @@ int main() {
 			if (currCharacter == '0') { currCharacter = '_'; }
 			else if (currCharacter == '1') { currCharacter = '-'; }
 			// 'X' implicitly handled
-			/*if ((statePairs.at(wireIndx)).at(0) != (statePairs.at(wireIndx)).at(1)) {
-				for (int i = 1; i < updateVal; i++) {
-					currHistVec.push_back((statePairs.at(wireIndx)).at(0));
-				}
-			}*/
 			for (int i = 1; i < updateVal; i++) {
 				currHistVec.push_back(currCharacter);
 			}
@@ -307,6 +294,9 @@ int main() {
 			cout << 5 << "    ";
 		}
 	}
+
+	cout << "\nCircuit Name: " << circuitName << endl;
+	cout << "Time Elapsed: " << lastTime << "ns\n";
 
 	return 0;
 }

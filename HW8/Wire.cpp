@@ -38,10 +38,14 @@ vector<Gate*> Wire::GetDrives() const {
 	return drives;
 }
 
+int Wire::DrivesSize() const {
+	return drives.size();
+}
+
 void Wire::PrintHistory() const {
 	cout << " " << name << " | ";
-	for (char c : history) {
-		cout << c;
+	for (int i = 0; (i < history.size()) && (i <= 60); i++) {
+		cout << history[i];
 	}
 	cout << "\n   |\n";
 }

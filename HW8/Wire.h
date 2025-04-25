@@ -22,6 +22,7 @@ public:
 	string GetName() const;
 	vector<char> GetHistory() const;
 	vector<Gate*> GetDrives() const;
+	int DrivesSize() const;
 
 	void PrintHistory() const;
 	void PrintInfo() const;
