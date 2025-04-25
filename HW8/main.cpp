@@ -114,7 +114,6 @@ int main() {
 		}
 	}
 
-
 	// Printing Events
 	cout << "Event Queue" << endl;
 	cout << "N T S C" << endl;
