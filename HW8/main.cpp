@@ -175,7 +175,7 @@ int main() {
 						qSize++;
 						q.emplace(Event(currWire->GetName(), currEvent.GetTime() + drivenGates.at(i)->GetDelay(), evalState, qSize, currWire->GetIndex()));
 						wireIndx = currEvent.GetIndex();
-						currWire->SetValue(evalState);
+						//currWire->SetValue(evalState);
 
 						(statePairs.at(wireIndx)).at(0) = currVal;
 						(statePairs.at(wireIndx)).at(1) = evalState;
@@ -215,7 +215,7 @@ int main() {
 					if (currVal != evalState) {
 						qSize++;
 						q.emplace(Event(currWire->GetName(), currEvent.GetTime() + (drivenGates.at(i))->GetDelay(), evalState, qSize, currWire->GetIndex()));
-						currWire->SetValue(evalState);
+						//currWire->SetValue(evalState);
 
 						(statePairs.at(wireIndx)).at(0) = currVal;
 						(statePairs.at(wireIndx)).at(1) = evalState;
