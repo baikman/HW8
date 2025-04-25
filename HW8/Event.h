@@ -7,7 +7,6 @@ using namespace std;
 
 class Event {
 public:
-    // We don't need a default constructor
     Event(string nm, int t, char val, int cnt, int indx) : name(nm), time(t), state(val), count(cnt), wireIndex(indx) {};
     
     string GetName() const;
@@ -18,18 +17,6 @@ public:
 
     void PrintInfo();
 
-    // TODO: Declare this in main program: priority_queue<Event> q
-    /*
-    struct Comparator {
-        bool operator()(const Event& e1, const Event& e2) {
-            if (e1.time == e2.time) {
-                return e1.count > e2.count;
-            }
-
-            return e1.time > e2.time;
-        }
-    };
-    */
 private:
     string name;
     int time, count, wireIndex;  

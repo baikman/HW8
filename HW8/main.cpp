@@ -13,7 +13,8 @@ using namespace std;
 int main() {
 	priority_queue<Event, vector<Event>, Comparator> q;
 	string cd, ic, keyword, circuitName, wireName, vectorName, dummy;
-	map<int, Wire*> wires; // use map::count to check existence
+	map<int, Wire*> wires;
+	map<int, vector<char>> statePairs;
 	vector<Gate*> gates;
 	vector<string> displayedWires;
 	Wire* myWire;
@@ -21,6 +22,9 @@ int main() {
 	int delay, wireIndex, input1, input2, output, wTime;
 	ifstream in;
 	char state;
+
+
+	
 	cout << "Enter circuit name: ";
 	cin >> cd;
 	ic = cd + "_v.txt";
@@ -43,20 +47,22 @@ int main() {
 			in >> wireName >> wireIndex;
 			myWire = new Wire('X', wireIndex, wireName, {}, {});
 			wires.insert({wireIndex, myWire});
+			statePairs.insert({ wireIndex, {'X', 'X'} });
 		} else if (keyword == "OUTPUT") {
 			in >> wireName >> wireIndex;
 			myWire = new Wire('X', wireIndex, wireName, {}, {});
 			wires.insert({wireIndex, myWire});
+			statePairs.insert({ wireIndex, {'X', 'X'} });
 		} else if (keyword == "NOT") {
 			in >> delay >> dummy >> input1 >> output;
 			// Check if output wire exists
 			if (wires.count(output) == 0) {
 				myWire = new Wire('X', output, "", {}, {});
 				wires.insert({output, myWire});
+				statePairs.insert({ output, {'X', 'X'} });
 			}
 			myGate = new Gate(keyword, delay, wires[input1], nullptr, wires[output]);
 			gates.push_back(myGate);
-			// temp done. TODO?: set input1's drives to the new gate
 			wires[input1]->AddDrive(myGate);
 		} else if (keyword == "AND" || keyword == "OR" || keyword == "XOR" || 
 				   keyword == "NAND" || keyword == "NOR" || keyword == "XNOR") {
@@ -65,10 +71,10 @@ int main() {
 			if (wires.count(output) == 0) {
 				myWire = new Wire('X', output, "", {}, {});
 				wires.insert({ output, myWire });
+				statePairs.insert({ output, {'X', 'X'} });
 			}
 			myGate = new Gate(keyword, delay, wires[input1], wires[input2], wires[output]);
 			gates.push_back(myGate);
-			// temp done. TODO?: set input1 and input2's drives to the new gate
 			wires[input1]->AddDrive(myGate);
 			wires[input2]->AddDrive(myGate);
 		} 
@@ -127,7 +133,7 @@ int main() {
 	// Checking when new events are created
 	Event currEvent = q.top();
 	string eventName, wireNm;
-	int wireIndx;
+	int eventIndx, wireIndx;
 	Wire* wireDriver;
 	int qSize = q.size();
 	while (!q.empty()) {
@@ -138,7 +144,7 @@ int main() {
 
 
 		if (currEvent.GetName() == "") {
-			wireIndx = currEvent.GetIndex();
+			eventIndx = currEvent.GetIndex();
 			if ((currEvent.GetTime()) > 60) {
 				break;
 			}
@@ -146,7 +152,7 @@ int main() {
 			char tmpChr = currEvent.GetState();
 
 			for (const auto& pair : wires) {
-				if (pair.second->GetIndex() == wireIndx) {
+				if (pair.second->GetIndex() == eventIndx) {
 					pair.second->SetValue(tmpChr);
 					wireDriver = pair.second;
 					break;
@@ -161,20 +167,25 @@ int main() {
 				for (int i = 0; i < drivenGates.size(); i++) {
 					currWire = (drivenGates.at(i))->GetOutput();
 					char currVal = currWire->GetValue();
+					wireIndx = currWire->GetIndex();
 
 					char evalState = (drivenGates.at(i))->evaluate((drivenGates.at(i))->GetInput(1), (drivenGates.at(i))->GetInput(2), currWire);
 
 					if (currVal != evalState) {
 						qSize++;
 						q.emplace(Event(currWire->GetName(), currEvent.GetTime() + (drivenGates.at(i))->GetDelay(), evalState, qSize, currWire->GetIndex()));
+						wireIndx = currEvent.GetIndex();
 						currWire->SetValue(evalState);
 
+						(statePairs.at(wireIndx)).at(0) = currVal;
+						(statePairs.at(wireIndx)).at(1) = evalState;
 					}
 				}
 			}
 		}
 		else {
 			eventName = currEvent.GetName();
+			
 			if ((currEvent.GetTime()) > 60) {
 				break;
 			}
@@ -197,6 +208,7 @@ int main() {
 				for (int i = 0; i < drivenGates.size(); i++) {
 					currWire = (drivenGates.at(i))->GetOutput();
 					char currVal = currWire->GetValue();
+					wireIndx = currWire->GetIndex();
 
 					char evalState = (drivenGates.at(i))->evaluate((drivenGates.at(i))->GetInput(1), (drivenGates.at(i))->GetInput(2), currWire);
 
@@ -204,6 +216,9 @@ int main() {
 						qSize++;
 						q.emplace(Event(currWire->GetName(), currEvent.GetTime() + (drivenGates.at(i))->GetDelay(), evalState, qSize, currWire->GetIndex()));
 						currWire->SetValue(evalState);
+
+						(statePairs.at(wireIndx)).at(0) = currVal;
+						(statePairs.at(wireIndx)).at(1) = evalState;
 					}
 				}
 			}
@@ -264,15 +279,22 @@ int main() {
 			pair.second->PrintHistory();
 		}
 	}
-	cout << "\n       ";
-	for (int i = 0; i <= lastTime; i++) {
+	
+	cout << "\r   |";
+	
+	for (int i = -1; i <= lastTime; i++) {
 		cout << "_";
 	}
-	cout << "\n 	";
-	for (int i = 0; i <= lastTime; i += 5) {
-		cout << i / 10 << "----";
+	cout << "\n     ";
+	for (int i = 0; i <= lastTime; i++) {
+		if (i%5 == 0) {
+			cout << i / 10;
+		}
+		else {
+			cout << "-";
+		}
 	}
-	cout << "\n 	";
+	cout << "\n     ";
 	for (int i = 0; i <= lastTime; i += 5) {
 		if (i % 2 == 0) {
 			cout << 0 << "    ";

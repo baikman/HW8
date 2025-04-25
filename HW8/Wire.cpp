@@ -39,12 +39,13 @@ vector<Gate*> Wire::GetDrives() const {
 }
 
 void Wire::PrintHistory() const {
-	cout << name << "	";
+	cout << " " << name << " | ";
 	for (char c : history) {
 		cout << c;
 	}
-	cout << endl;
+	cout << "\n   |\n";
 }
+
 
 void Wire::PrintInfo() const {
 	cout << value << " " << index << " " << name << " ";
