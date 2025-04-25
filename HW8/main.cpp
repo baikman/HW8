@@ -173,7 +173,7 @@ int main() {
 
 					if (currVal != evalState) {
 						qSize++;
-						q.emplace(Event(currWire->GetName(), currEvent.GetTime() + (drivenGates.at(i))->GetDelay(), evalState, qSize, currWire->GetIndex()));
+						q.emplace(Event(currWire->GetName(), currEvent.GetTime() + drivenGates.at(i)->GetDelay(), evalState, qSize, currWire->GetIndex()));
 						wireIndx = currEvent.GetIndex();
 						currWire->SetValue(evalState);
 
@@ -238,13 +238,17 @@ int main() {
 			char currCharacter = currHistVec.back();
 			if (currCharacter == '0') { currCharacter = '_'; }
 			else if (currCharacter == '1') { currCharacter = '-'; }
-			
+			// 'X' implicitly handled
+			/*if ((statePairs.at(wireIndx)).at(0) != (statePairs.at(wireIndx)).at(1)) {
+				for (int i = 1; i < updateVal; i++) {
+					currHistVec.push_back((statePairs.at(wireIndx)).at(0));
+				}
+			}*/
 			for (int i = 1; i < updateVal; i++) {
-				
 				currHistVec.push_back(currCharacter);
 			}
 
-			auto postState = currEvent.GetState();
+			char postState = currEvent.GetState();
 			if (postState == '0') { postState = '_'; }
 			else if (postState == '1') { postState = '-'; }
 			
